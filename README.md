@@ -173,24 +173,3 @@ memory and are not saved to PostgreSQL.
 
 The UI uses centimetres for dimensions. The core stores integer millimetres so
 placements and sizes do not accumulate floating-point rounding errors.
-
-## How it works
-
-`stuff-core` keeps the current storage layout, item list, stock, reservations,
-and fill estimates in one in-memory snapshot. In live mode, that snapshot is
-loaded from PostgreSQL and every successful change is written back in a
-transaction.
-
-Each saved change increments a revision number. Before writing, the service
-checks that the revision it loaded is still current. If another client saved
-first, the second write returns a conflict instead of overwriting newer data.
-
-After a successful write, PostgreSQL sends a small `LISTEN`/`NOTIFY` message
-containing the change topic and revision. Other desktop clients receive the
-message and fetch the current data again. The notification is only a signal;
-the full inventory is always read from PostgreSQL.
-
-The CLI connects directly to `stuff-core`. The desktop app connects through
-its Tauri Rust commands, and the React UI receives the same current snapshot.
-That keeps search, placement checks, stock changes, and conflict handling the
-same in both interfaces.
