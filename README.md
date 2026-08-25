@@ -194,7 +194,3 @@ The CLI connects directly to `stuff-core`. The desktop app connects through
 its Tauri Rust commands, and the React UI receives the same current snapshot.
 That keeps search, placement checks, stock changes, and conflict handling the
 same in both interfaces.
-
-## License
-
-MIT
